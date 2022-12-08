@@ -6,10 +6,12 @@ const app = express();
 
 app.use(express.json());
 
-const courses = [
-    { id: 1, name: "course 1" },
-    { id: 2, name: "course 2" },
-    { id: 3, name: "course 3" }
+const bugs = [
+    { id: 1, name: "Bug 1" },
+    { id: 2, name: "Bug 2" },
+    { id: 3, name: "Bug 3" },
+    { id: 3, name: "Bug 3" }
+
 ]
 
 app.get("/", (req, res) => {
@@ -18,75 +20,75 @@ app.get("/", (req, res) => {
 });
 
 
-app.get("/api/courses/", (res) => {
+app.get("/api/bugs/", (req,res) => {
 
-    res.send(courses);
+    res.send(bugs);
 });
 
-app.get("/api/courses/:id", (req, res) => {
+app.get("/api/bugs/:id", (req, res) => {
 
-    const course = courses.find(c => c.id === parseInt(req.params.id))
+    const bug = bugs.find(c => c.id === parseInt(req.params.id))
 
-    if (!course) res.status(404).json("Course Not Found");
+    if (!bug) res.status(404).json("Bug Not Found");
 
-    res.send(course);
+    res.send(bug);
 });
 
 
-app.post("/api/courses", (req, res) => {
+app.post("/api/bugs", (req, res) => {
 
-    const { error } = validateCourse(req.body) 
+    const { error } = validateBugs(req.body) 
 
     if (error) 
-    return res.status(400).send(error.details[0].message)
+    return res.status(400).send(error.bugs[0].message)
 
 
-    const course = {
-        id: courses.length + 1,
+    const bug = {
+        id: bugs.length + 1,
         name: req.body.name
     };
 
-    courses.push(course);
-    res.send(course)
+    bugs.push(bug);
+    res.send(bug)
 });
 
-app.put("/api/courses/:id", (req, res) => {
+app.put("/api/bugs/:id", (req, res) => {
 
-    const course = courses.find(c => c.id === parseInt(req.params.id))
+    const bug = bugs.find(c => c.id === parseInt(req.params.id))
 
-    if (!course) res.status(404).json("Course Not Found");
+    if (!bug) res.status(404).json("Not Found");
 
 
-    const { error } = validateCourse(req.body)
+    const { error } = validateBugs(req.body)
 
     if (error) 
     return res.status(400).send(error.details[0].message)
 
-    course.name = req.body.name;
-    res.send(course);
+    bug.name = req.body.name;
+    res.send(bug);
 
-    function validateCourse(course) {
+    function validateBugs(bug) {
 
-        const schema = {
+        const bug_schema = {
             name: Joi.string().min(3).required()
         };
 
-        return Joi.validate(course, schema);
+        return Joi.validate(bug, bug_schema);
     }
 
 });
 
-app.delete("/api/courses/:id", (req, res) => {
+app.delete("/api/bugs/:id", (req, res) => {
 
-    const course = courses.find(c => c.id === parseInt(req.params.id))
+    const bug = bugs.find(c => c.id === parseInt(req.params.id))
 
-    if (!course) res.status(404).json("Id with this course id not found!!");
+    if (!bug) res.status(404).json("Id with this bug not found!!");
 
-    const index = courses.indexOf(course)
+    const index = bugs.indexOf(bug)
 
-    courses.splice(index, 1)
+    bugs.splice(index, 1)
 
-    res.send(courses)
+    res.send(bugs)
 
 });
 
